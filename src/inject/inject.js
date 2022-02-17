@@ -4,9 +4,15 @@
 	style.innerText = "div { filter: none !important; }";
 	document.head.appendChild(style);
 
-	document.querySelectorAll("div").forEach(e => {
-		if ([...e.classList].some(c => c.startsWith("preview-banner--"))) {
-			e.style.display = "none";
+	document.querySelectorAll("#viewer-wrapper > div").forEach(e => {
+		if (e.id == '' && e.getAttribute('role') == null) {
+			e.remove();
+		}
+	})
+
+	document.querySelectorAll("#viewer-wrapper .pf > div").forEach(e => {
+		if (e.innerHTML.toLowerCase().indexOf("premium") > -1) {
+			e.remove();
 		}
 	})
 
