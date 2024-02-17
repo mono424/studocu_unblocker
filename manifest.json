@@ -10,7 +10,7 @@
   "content_scripts": [
     {
       "js": [
-        "src/inject/inject.js"
+        "src/index.js"
       ],
       "matches": [
         "https://www.studocu.com/*"
