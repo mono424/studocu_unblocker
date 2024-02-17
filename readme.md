@@ -1,4 +1,4 @@
-> Studocu blurs images now on backend, what the should have done in the first place. This means Images are not unblured anymore.
+> Studocu blurs images now on backend, what the should have done in the first place. <del>This means Images are not unblured anymore.</del> Works anyways :P
 
 # StuDocu Unblocker
 

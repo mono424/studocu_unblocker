@@ -1,5 +1,7 @@
 (async function() {
 
+	const bgImageName = "bg1.png";
+	const blurImageRegex = /blurred\/page([0-9]+)\.webp/
 	let documentWrapper = null;
 	let maxTries = 1000;
 	while (documentWrapper == null) {
@@ -11,6 +13,14 @@
 		}
 	}
 
+	let imgUrl = null;
+	for (const img of [...document.querySelectorAll("img")]) {
+		if (img.src.replace(bgImageName, "") != img.src) {
+			imgUrl = img.src;
+			break;
+		}
+	}
+	
 	const globalStyle = document.createElement('style');
 	globalStyle.innerText = `
 		.unblock-button {
@@ -74,7 +84,15 @@
 				};
 			}
 		})
+
+		document.querySelectorAll("img").forEach(e => {
+			if (blurImageRegex.test(e.src)) {
+				const index = blurImageRegex.exec(e.src)[1];
+				e.src = imgUrl.replace(bgImageName, `bg${index}.png`);
+			}
+		})
 	
+		
 		function printPdf() {
 			const originalContents = document.body.innerHTML;
 			const extraStyles = `
