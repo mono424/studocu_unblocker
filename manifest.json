@@ -1,22 +1,20 @@
 {
   "name": "StuDocu Unblocker",
-  "version": "0.0.1",
-  "manifest_version": 2,
+  "version": "0.0.2",
+  "manifest_version": 3,
   "description": "Well StuDocu is free now ...",
   "homepage_url": "https://khad.im",
   "icons": {
     "128": "icons/icon.png"
   },
-  "background": {
-    "scripts": [
-      "src/bg/background.js"
-    ],
-    "persistent": true
-  },
-  "browser_action": {
-    "default_title": "Inject!"
-  },
-  "permissions": [
-    "https://www.studocu.com/*"
+  "content_scripts": [
+    {
+      "js": [
+        "src/inject/inject.js"
+      ],
+      "matches": [
+        "https://www.studocu.com/*"
+      ]
+    }
   ]
 }
