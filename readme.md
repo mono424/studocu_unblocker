@@ -1,4 +1,9 @@
+> Studocu blurs images now on backend, what the should have done in the first place. This means Images are not unblured anymore.
+
 # StuDocu Unblocker
+
+![button](https://github.com/mono424/studocu_unblocker/blob/main/img/cover.png "Button")
+
 A Chrome Extension which 1-Click unblocks studocu documents. It removes blur and the ad-banner.
 
 ## Install
