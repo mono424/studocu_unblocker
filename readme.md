@@ -5,6 +5,12 @@
 
 A Chrome Extension which 1-Click unblocks studocu documents. It removes blur and the ad-banner.
 
+## Features
+
+- Unblur Images
+- Remove banners
+- Add PrintView
+
 ## Install
 
 1. Clone or download this repo
