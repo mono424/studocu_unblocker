@@ -113,7 +113,6 @@
 				e => imageRegex.test(e.src)
 			);
 			printView.document.body.innerHTML = images.map(e => e.outerHTML).join("<br>");
-			printView.innerHTML = originalContents;
 		}
 	}
 
