@@ -3,80 +3,108 @@
 	const bgImageName = "bg1.png";
 	const imageRegex = /bg[0-9]+\.png/
 	const blurImageRegex = /blurred\/page([0-9]+)\.webp/
+	const downloadButtonRegex = /(Download|Herunterladen)/
+	const maxInjectTries = 1000;
+
 	let documentWrapper = null;
-	let maxTries = 1000;
-	while (documentWrapper == null) {
-		documentWrapper = document.getElementById("document-wrapper");
-		await new Promise(r => setTimeout(r, 100));
-		if (maxTries-- <= 0) {
-			console.error("StuDocu Unblocker: Could not find document wrapper!");
-			return;
-		}
-	}
-
 	let imgUrl = null;
-	for (const img of [...document.querySelectorAll("img")]) {
-		if (img.src.replace(bgImageName, "") != img.src) {
-			imgUrl = img.src;
-			break;
-		}
-	}
 	
-	const globalStyle = document.createElement('style');
-	globalStyle.innerText = `
-		.unblock-button {
-			margin: 0 0 0 10px;
-			padding: 7px 24px;
-			border: none;
-			background-color: #61c4ff;
-			color: white;
-			cursor: pointer;
-			font-weight: bold;
-			border-radius: 32px;
+	inject(maxInjectTries);
+	setInterval(() => {
+		if (documentWrapper != null && document.getElementById("bypass-button") == null) {
+			console.log("StuDocu Unblocker: Reinject ...");
+			inject(maxInjectTries);
 		}
-		.unblock-button:hover {
-			background-color: #4da6ff;
+	}, 1000);
+
+	async function inject(maxTries) {
+		documentWrapper = null;
+		while (documentWrapper == null) {
+			documentWrapper = document.getElementById("document-wrapper");
+			await new Promise(r => setTimeout(r, 100));
+			if (maxTries-- <= 0) {
+				console.error("StuDocu Unblocker: Could not find document wrapper!");
+				return;
+			}
 		}
-		.unblock-button:active {
-			background-color: #3b8ad9;
+
+		for (const img of [...document.querySelectorAll("img")]) {
+			if (img.src.replace(bgImageName, "") != img.src) {
+				imgUrl = img.src;
+				break;
+			}
 		}
-	`;
-	document.head.appendChild(globalStyle);
+		
+		const globalStyle = document.createElement('style');
+		globalStyle.innerText = `
+			.unblock-button {
+				margin: 0 0 0 10px;
+				padding: 7px 24px;
+				border: none;
+				background-color: #61c4ff;
+				color: white;
+				cursor: pointer;
+				font-weight: bold;
+				border-radius: 32px;
+			}
+			.unblock-button:hover {
+				background-color: #4da6ff;
+			}
+			.unblock-button:active {
+				background-color: #3b8ad9;
+			}
+		`;
+		document.head.appendChild(globalStyle);
 
-	const header = document.querySelector("header > div");
+		const header = document.querySelector("header > div");
 
-	const bypassButton = document.createElement('button');
-	bypassButton.innerText = "🔓 Unlock Document";
-	bypassButton.className = "unblock-button";
-	bypassButton.onclick = unblock;
-	header.appendChild(bypassButton);
+		const bypassButton = document.createElement('button');
+		bypassButton.id = "bypass-button";
+		bypassButton.innerText = "🔓 Unlock Document";
+		bypassButton.className = "unblock-button";
+		bypassButton.onclick = unblock;
+		header.appendChild(bypassButton);
 
-	console.log("StuDocu Unblocker: Injected!");
+		console.log("StuDocu Unblocker: Injected!");
+	}
 
 	function unblock() {
 		var style = document.createElement('style');
 		style.innerText = "div { filter: none !important; }";
 		document.head.appendChild(style);
+
+
+		const pages = [...documentWrapper.querySelectorAll(".pf")];
+		
+		for (const page of pages) {
+			const children = [...page.children];
+			for (const child of children) {
+				if (child.innerHTML.toLowerCase().indexOf("<img") <= 0) {
+					child.remove();
+				}
+			}
+		}
 	
-		document.querySelectorAll("#document-wrapper > div > div").forEach(e => {
+		documentWrapper.querySelectorAll("div > div").forEach(e => {
 			const computedStyleMap = e.computedStyleMap();
-			if (computedStyleMap.get('position').value.toLowerCase() == "sticky") {
+			const position = computedStyleMap.get('position');
+			if (position && position.value.toLowerCase() == "sticky") {
 				e.remove();
 			}
 		})
 	
-		document.querySelectorAll("#document-wrapper #premium-page-header").forEach(e => {
+		documentWrapper.querySelectorAll("#premium-page-header").forEach(e => {
 			e.remove();
 		})
 	
-		document.querySelectorAll("#document-wrapper .pf > div").forEach(e => {
-			if (e.innerHTML.toLowerCase().indexOf("premium") >= 0) {
-				e.remove();
-			}
-		})
+		// documentWrapper.querySelectorAll(".pf > div").forEach(e => {
+		// 	if (e.innerHTML.toLowerCase().indexOf("premium") >= 0) {
+		// 		e.remove();
+		// 	}
+		// })
 	
 		document.querySelectorAll("button").forEach(e => {
-			if (e.innerHTML.toLowerCase().indexOf("herunterladen") >= 0) {
+			if (downloadButtonRegex.test(e.innerHTML)) {
 				var cloned = e.cloneNode(true);
 				e.parentNode.replaceChild(cloned, e);
 				cloned.className = "unblock-button";
@@ -88,7 +116,7 @@
 			}
 		})
 
-		document.querySelectorAll("img").forEach(e => {
+		documentWrapper.querySelectorAll("img").forEach(e => {
 			if (blurImageRegex.test(e.src)) {
 				const index = blurImageRegex.exec(e.src)[1];
 				e.src = imgUrl.replace(bgImageName, `bg${index}.png`);

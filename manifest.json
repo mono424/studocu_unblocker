@@ -1,6 +1,6 @@
 {
   "name": "StuDocu Unblocker",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "manifest_version": 3,
   "description": "Well StuDocu is free now ...",
   "homepage_url": "https://khad.im",
@@ -13,7 +13,8 @@
         "src/index.js"
       ],
       "matches": [
-        "https://www.studocu.com/*"
+        "https://www.studocu.com/*",
+        "https://www.studeersnel.nl/*"
       ]
     }
   ]
