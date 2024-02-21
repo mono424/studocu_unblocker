@@ -3,7 +3,7 @@
 	const bgImageName = "bg1.png";
 	const imageRegex = /bg[0-9]+\.png/
 	const blurImageRegex = /blurred\/page([0-9]+)\.webp/
-	const downloadButtonRegex = /(Download|Herunterladen)/
+	const downloadButtonRegex = /(Download|Herunterladen|Scarica)/
 	const maxInjectTries = 1000;
 
 	let documentWrapper = null;
